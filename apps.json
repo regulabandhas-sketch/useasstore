@@ -5,6 +5,12 @@
       "image": "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg",
       "download": "https://whatsapp.com/download",
       "qr": "https://example.com/qr1"
-    }
+    },
+    {
+"name":"test",
+"image":"test.img",
+"download":"1234.apk",
+"qr":"123.apk"
+},
   ]
 }
