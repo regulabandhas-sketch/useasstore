@@ -11,6 +11,6 @@
 "image":"test.img",
 "download":"1234.apk",
 "qr":"123.apk"
-},
+};.
   ]
 }
