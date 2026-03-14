@@ -15,11 +15,11 @@
       "desc": "Fast and secure messaging."
     },
     {
-"name":"useas",
-"tag":"games",
-"link":"uuuuuuuuu.apk",
-"image":"asdf.img",
-"desc":"bokka"
-}
+      "name": "Useas Games",
+      "tag": "Games",
+      "link": "https://example.com/useas.apk",
+      "image": "https://example.com/images/useas.png",
+      "desc": "An engaging gaming experience."
+    }
   ]
 }
