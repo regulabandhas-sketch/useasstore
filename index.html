@@ -1,38 +1,169 @@
-<!DOCTYPE html>
-<html>
-<head>
+<script>
 
-<title>Useas Store</title>
+const API_FILE = "apps.json";
+let apps = [];
 
-<link rel="stylesheet" href="style.css">
+// LOAD APPS FROM BACKEND
+async function loadApps(){
 
-</head>
+const res = await fetch(API_FILE);
+const data = await res.json();
 
-<body>
+apps = data.apps;
 
-<header id="title">USEAS STORE</header>
+renderStore();
 
-<div id="appList" class="container"></div>
+}
 
-<div id="adminPanel">
+function renderStore(list = apps) {
 
-<h2>Admin Panel</h2>
+  const grid = document.getElementById('appGrid');
+  grid.innerHTML = '';
 
-<input id="appName" placeholder="App Name">
+  list.forEach((app, i) => {
 
-<input id="appImage" placeholder="Image Link">
+    const card = document.createElement('div');
+    card.className = 'app-card';
 
-<input id="downloadLink" placeholder="Download Link">
+    card.innerHTML = `
 
-<input id="qrLink" placeholder="QR Link">
+      <img src="${app.image}" class="app-icon">
 
-<button onclick="addApp()">Generate App Code</button>
+      <div class="app-info">
+        <div class="app-name">${app.name}</div>
+        <div class="app-meta">${app.tag} • 4.9 ★</div>
 
-<textarea id="output"></textarea>
+        <button class="install-btn"
+        onclick="window.open('${app.link}')">
+        Install
+        </button>
 
-</div>
+      </div>
 
-<script src="script.js"></script>
+      <button class="qr-btn"
+      onclick="openQR(${i})">📷</button>
 
-</body>
-</html>
+    `;
+
+    grid.appendChild(card);
+
+  });
+
+}
+
+
+// ADMIN LOGIN
+
+let clicks = 0;
+
+document.getElementById('logoBtn').onclick = () => {
+
+clicks++
+
+if(clicks <= 5)
+document.getElementById(`d${clicks}`).classList.add('active')
+
+if(clicks === 5){
+
+clicks = 0
+
+setTimeout(()=>{
+
+document.querySelectorAll('.dot').forEach(d=>d.classList.remove('active'))
+
+document.getElementById('pwOverlay').classList.remove('hidden')
+
+},400)
+
+}
+
+}
+
+
+document.getElementById('pwSubmit').onclick = () => {
+
+if(document.getElementById('pwInput').value === "useasstore"){
+
+document.getElementById('pwOverlay').classList.add('hidden')
+document.getElementById('adminOverlay').classList.remove('hidden')
+
+}else{
+
+alert("Wrong Password")
+
+}
+
+}
+
+
+
+// ADMIN ADD APP (GENERATE JSON)
+
+document.getElementById('addAppBtn').onclick = () => {
+
+const name = document.getElementById('aName').value
+const image = document.getElementById('aImage').value
+const link = document.getElementById('aLink').value
+const tag = document.getElementById('aTag').value
+const desc = document.getElementById('aDesc').value
+
+const jsonCode =
+
+`{
+"name":"${name}",
+"tag":"${tag}",
+"link":"${link}",
+"image":"${image}",
+"desc":"${desc}"
+},`
+
+alert("Copy this code and paste inside apps.json")
+
+console.log(jsonCode)
+
+prompt("Copy this JSON and add to apps.json",jsonCode)
+
+}
+
+
+
+// QR SYSTEM
+
+window.openQR = (i)=>{
+
+const app = apps[i]
+
+document.getElementById('qrAppName').textContent = app.name
+
+const container = document.getElementById('qr-container')
+
+container.innerHTML = ""
+
+new QRCode(container,{
+text: app.link,
+width:160,
+height:160
+})
+
+document.getElementById('qrOverlay').classList.remove('hidden')
+
+}
+
+
+// SEARCH
+
+document.getElementById('searchInput').oninput = (e)=>{
+
+const term = e.target.value.toLowerCase()
+
+renderStore(apps.filter(a =>
+a.name.toLowerCase().includes(term)
+))
+
+}
+
+
+// START
+loadApps()
+
+</script>
