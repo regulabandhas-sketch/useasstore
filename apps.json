@@ -1,16 +1,18 @@
 {
   "apps": [
     {
-      "name": "WhatsApp",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg",
-      "download": "https://whatsapp.com/download",
-      "qr": "https://example.com/qr1"
+      "name": "Study Master",
+      "tag": "Education",
+      "link": "https://google.com",
+      "image": "https://cdn-icons-png.flaticon.com/512/3075/3075299.png",
+      "desc": "Your ultimate study companion."
     },
     {
-      "name": "test",
-      "image": "test.img",
-      "download": "1234.apk",
-      "qr": "123.apk"
+      "name": "Telegram",
+      "tag": "Communication",
+      "link": "https://telegram.org",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
+      "desc": "Fast and secure messaging."
     }
   ]
 }
