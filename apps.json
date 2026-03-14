@@ -7,10 +7,10 @@
       "qr": "https://example.com/qr1"
     },
     {
-"name":"test",
-"image":"test.img",
-"download":"1234.apk",
-"qr":"123.apk"
-};.
+      "name": "test",
+      "image": "test.img",
+      "download": "1234.apk",
+      "qr": "123.apk"
+    }
   ]
 }
