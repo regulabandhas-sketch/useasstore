@@ -1,113 +1,407 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Useas Store</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+
+:root{
+--primary:#6200ee;
+--secondary:#03dac6;
+--accent:#ff0266;
+--bg:#f8f9ff;
+--card:#ffffff;
+--text:#121212;
+--radius:20px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
+}
+
+header{
+position:sticky;
+top:0;
+background:white;
+padding:15px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
+z-index:1000;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+cursor:pointer;
+}
+
+.logo-icon{
+width:40px;
+height:40px;
+border-radius:10px;
+background:linear-gradient(135deg,var(--primary),var(--secondary));
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:20px;
+}
+
+.logo-text{
+font-weight:800;
+font-size:22px;
+color:var(--primary);
+}
+
+.search{
+background:#eff2f7;
+padding:10px 15px;
+border-radius:10px;
+display:flex;
+align-items:center;
+gap:8px;
+width:300px;
+}
+
+.search input{
+border:none;
+background:transparent;
+outline:none;
+width:100%;
+}
+
+.banner{
+margin:30px auto;
+width:90%;
+max-width:1200px;
+height:180px;
+border-radius:20px;
+background:linear-gradient(120deg,#6200ee,#03dac6,#ff0266);
+display:flex;
+align-items:center;
+padding:30px;
+color:white;
+font-size:28px;
+font-weight:bold;
+}
+
+.section{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+.app-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.app-card{
+background:white;
+padding:20px;
+border-radius:20px;
+display:flex;
+gap:15px;
+position:relative;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.app-card:hover{
+transform:translateY(-5px);
+}
+
+.app-icon{
+width:80px;
+height:80px;
+border-radius:20%;
+object-fit:cover;
+}
+
+.app-name{
+font-weight:bold;
+font-size:17px;
+}
+
+.install{
+margin-top:10px;
+background:var(--primary);
+color:white;
+border:none;
+padding:7px 18px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.qr-btn{
+position:absolute;
+top:15px;
+right:15px;
+background:none;
+border:none;
+font-size:18px;
+cursor:pointer;
+}
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.4);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.modal{
+background:white;
+padding:30px;
+border-radius:20px;
+width:400px;
+}
+
+.hidden{
+display:none;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+border:1px solid #eee;
+}
+
+button{
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo" id="logoBtn">
+<div class="logo-icon">🛍️</div>
+<div class="logo-text">USEAS</div>
+</div>
+
+<div class="search">
+🔍
+<input type="text" id="searchInput" placeholder="Search apps">
+</div>
+
+</header>
+
+<div class="banner">
+Top Rated Student Apps
+</div>
+
+<div class="section">
+
+<h2>Featured Apps</h2>
+
+<div class="app-grid" id="appGrid"></div>
+
+</div>
+
+<!-- PASSWORD -->
+
+<div class="overlay hidden" id="pwOverlay">
+
+<div class="modal">
+
+<h3>Admin Access</h3>
+
+<input type="password" id="pwInput" placeholder="Enter password">
+
+<button onclick="checkPassword()" class="install" style="width:100%">Login</button>
+
+</div>
+
+</div>
+
+<!-- ADMIN PANEL -->
+
+<div class="overlay hidden" id="adminOverlay">
+
+<div class="modal">
+
+<h3>Add New App</h3>
+
+<input id="aName" placeholder="App Name">
+
+<input id="aImage" placeholder="Icon URL">
+
+<input id="aLink" placeholder="Download Link">
+
+<input id="aTag" placeholder="Category">
+
+<textarea id="aDesc" placeholder="Description"></textarea>
+
+<button onclick="generateCode()" class="install" style="width:100%">Generate JSON</button>
+
+</div>
+
+</div>
+
+<!-- QR -->
+
+<div class="overlay hidden" id="qrOverlay">
+
+<div class="modal" style="text-align:center">
+
+<h3 id="qrTitle">QR</h3>
+
+<div id="qrBox" style="margin:20px"></div>
+
+<button onclick="closeQR()" class="install" style="width:100%">Close</button>
+
+</div>
+
+</div>
+
 <script>
 
-const API_FILE = "apps.json";
-let apps = [];
+const BACKEND="apps.json"
 
-// LOAD APPS FROM BACKEND
+let apps=[]
+
+
+// LOAD APPS
+
 async function loadApps(){
 
-const res = await fetch(API_FILE);
-const data = await res.json();
+const res=await fetch(BACKEND)
 
-apps = data.apps;
+const data=await res.json()
 
-renderStore();
+apps=data.apps
 
-}
-
-function renderStore(list = apps) {
-
-  const grid = document.getElementById('appGrid');
-  grid.innerHTML = '';
-
-  list.forEach((app, i) => {
-
-    const card = document.createElement('div');
-    card.className = 'app-card';
-
-    card.innerHTML = `
-
-      <img src="${app.image}" class="app-icon">
-
-      <div class="app-info">
-        <div class="app-name">${app.name}</div>
-        <div class="app-meta">${app.tag} • 4.9 ★</div>
-
-        <button class="install-btn"
-        onclick="window.open('${app.link}')">
-        Install
-        </button>
-
-      </div>
-
-      <button class="qr-btn"
-      onclick="openQR(${i})">📷</button>
-
-    `;
-
-    grid.appendChild(card);
-
-  });
+renderStore()
 
 }
 
 
-// ADMIN LOGIN
+// RENDER
 
-let clicks = 0;
+function renderStore(list=apps){
 
-document.getElementById('logoBtn').onclick = () => {
+const grid=document.getElementById("appGrid")
+
+grid.innerHTML=""
+
+list.forEach((app,i)=>{
+
+grid.innerHTML+=`
+
+<div class="app-card">
+
+<img src="${app.image}" class="app-icon">
+
+<div>
+
+<div class="app-name">${app.name}</div>
+
+<div>${app.tag}</div>
+
+<button class="install" onclick="window.open('${app.link}')">Install</button>
+
+</div>
+
+<button class="qr-btn" onclick="openQR(${i})">📷</button>
+
+</div>
+
+`
+
+})
+
+}
+
+
+// SEARCH
+
+document.getElementById("searchInput").oninput=(e)=>{
+
+const term=e.target.value.toLowerCase()
+
+renderStore(apps.filter(a=>a.name.toLowerCase().includes(term)))
+
+}
+
+
+// ADMIN CLICK
+
+let clicks=0
+
+document.getElementById("logoBtn").onclick=()=>{
 
 clicks++
 
-if(clicks <= 5)
-document.getElementById(`d${clicks}`).classList.add('active')
+if(clicks===5){
 
-if(clicks === 5){
+clicks=0
 
-clicks = 0
-
-setTimeout(()=>{
-
-document.querySelectorAll('.dot').forEach(d=>d.classList.remove('active'))
-
-document.getElementById('pwOverlay').classList.remove('hidden')
-
-},400)
+document.getElementById("pwOverlay").classList.remove("hidden")
 
 }
 
 }
 
 
-document.getElementById('pwSubmit').onclick = () => {
+// PASSWORD
 
-if(document.getElementById('pwInput').value === "useasstore"){
+function checkPassword(){
 
-document.getElementById('pwOverlay').classList.add('hidden')
-document.getElementById('adminOverlay').classList.remove('hidden')
+const pass=document.getElementById("pwInput").value
+
+if(pass==="useasstore"){
+
+document.getElementById("pwOverlay").classList.add("hidden")
+
+document.getElementById("adminOverlay").classList.remove("hidden")
 
 }else{
 
-alert("Wrong Password")
+alert("Wrong password")
 
 }
 
 }
 
 
+// GENERATE JSON
 
-// ADMIN ADD APP (GENERATE JSON)
+function generateCode(){
 
-document.getElementById('addAppBtn').onclick = () => {
+const name=aName.value
 
-const name = document.getElementById('aName').value
-const image = document.getElementById('aImage').value
-const link = document.getElementById('aLink').value
-const tag = document.getElementById('aTag').value
-const desc = document.getElementById('aDesc').value
+const image=aImage.value
 
-const jsonCode =
+const link=aLink.value
+
+const tag=aTag.value
+
+const desc=aDesc.value
+
+const json=
 
 `{
 "name":"${name}",
@@ -117,53 +411,41 @@ const jsonCode =
 "desc":"${desc}"
 },`
 
-alert("Copy this code and paste inside apps.json")
-
-console.log(jsonCode)
-
-prompt("Copy this JSON and add to apps.json",jsonCode)
+prompt("Copy this JSON and paste into apps.json",json)
 
 }
 
 
+// QR
 
-// QR SYSTEM
+function openQR(i){
 
-window.openQR = (i)=>{
+const app=apps[i]
 
-const app = apps[i]
+const box=document.getElementById("qrBox")
 
-document.getElementById('qrAppName').textContent = app.name
+box.innerHTML=""
 
-const container = document.getElementById('qr-container')
+new QRCode(box,{text:app.link,width:160,height:160})
 
-container.innerHTML = ""
+document.getElementById("qrTitle").innerText=app.name
 
-new QRCode(container,{
-text: app.link,
-width:160,
-height:160
-})
-
-document.getElementById('qrOverlay').classList.remove('hidden')
+document.getElementById("qrOverlay").classList.remove("hidden")
 
 }
 
+function closeQR(){
 
-// SEARCH
-
-document.getElementById('searchInput').oninput = (e)=>{
-
-const term = e.target.value.toLowerCase()
-
-renderStore(apps.filter(a =>
-a.name.toLowerCase().includes(term)
-))
+document.getElementById("qrOverlay").classList.add("hidden")
 
 }
 
 
 // START
+
 loadApps()
 
 </script>
+
+</body>
+</html>
