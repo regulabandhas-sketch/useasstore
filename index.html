@@ -221,85 +221,67 @@ Top Rated Student Apps
 
 </div>
 
-<!-- PASSWORD -->
-
 <div class="overlay hidden" id="pwOverlay">
-
 <div class="modal">
-
 <h3>Admin Access</h3>
-
 <input type="password" id="pwInput" placeholder="Enter password">
-
 <button onclick="checkPassword()" class="install" style="width:100%">Login</button>
-
 </div>
-
 </div>
-
-<!-- ADMIN PANEL -->
 
 <div class="overlay hidden" id="adminOverlay">
-
 <div class="modal">
-
 <h3>Add New App</h3>
 
 <input id="aName" placeholder="App Name">
-
 <input id="aImage" placeholder="Icon URL">
-
 <input id="aLink" placeholder="Download Link">
-
 <input id="aTag" placeholder="Category">
-
 <textarea id="aDesc" placeholder="Description"></textarea>
 
 <button onclick="generateCode()" class="install" style="width:100%">Generate JSON</button>
 
 </div>
-
 </div>
-
-<!-- QR -->
 
 <div class="overlay hidden" id="qrOverlay">
-
 <div class="modal" style="text-align:center">
-
 <h3 id="qrTitle">QR</h3>
-
 <div id="qrBox" style="margin:20px"></div>
-
 <button onclick="closeQR()" class="install" style="width:100%">Close</button>
-
 </div>
-
 </div>
 
 <script>
 
 const BACKEND="apps.json"
-
 let apps=[]
 
 
-// LOAD APPS
+// LOAD APPS FROM JSON
 
 async function loadApps(){
 
-const res=await fetch(BACKEND)
+try{
+
+const res=await fetch(BACKEND+"?v="+Date.now())
 
 const data=await res.json()
 
-apps=data.apps
+apps=data.apps || []
 
 renderStore()
+
+}catch(e){
+
+console.error("JSON load error",e)
+
+}
 
 }
 
 
-// RENDER
+// RENDER STORE
 
 function renderStore(list=apps){
 
@@ -313,13 +295,13 @@ grid.innerHTML+=`
 
 <div class="app-card">
 
-<img src="${app.image}" class="app-icon">
+<img src="${app.image || 'https://via.placeholder.com/80'}" class="app-icon">
 
 <div>
 
-<div class="app-name">${app.name}</div>
+<div class="app-name">${app.name || 'App'}</div>
 
-<div>${app.tag}</div>
+<div>${app.tag || 'App'}</div>
 
 <button class="install" onclick="window.open('${app.link}')">Install</button>
 
@@ -347,7 +329,7 @@ renderStore(apps.filter(a=>a.name.toLowerCase().includes(term)))
 }
 
 
-// ADMIN CLICK
+// ADMIN LOGIN
 
 let clicks=0
 
@@ -392,13 +374,9 @@ alert("Wrong password")
 function generateCode(){
 
 const name=aName.value
-
 const image=aImage.value
-
 const link=aLink.value
-
 const tag=aTag.value
-
 const desc=aDesc.value
 
 const json=
@@ -439,6 +417,11 @@ function closeQR(){
 document.getElementById("qrOverlay").classList.add("hidden")
 
 }
+
+
+// AUTO REFRESH STORE EVERY 30s
+
+setInterval(loadApps,30000)
 
 
 // START
