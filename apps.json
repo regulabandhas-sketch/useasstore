@@ -6,6 +6,10 @@
       "download": "download.html",
       "qr": "qr.html"
     },
-    { "name": "useas", "tag": "studyhubs", "link": "https://mega.nz/file/cEVXgDIT#H76lST6KpZljnP_YDbD8y8nZjjSevS7ZxPyR4zNZJlU", "image": "https://ik.imagekit.io/images213/ChatGPT%20Image%20Feb%2028,%202026,%2005_42_57%20AM.png", "desc": "studyhubs" },
+    { "name": "useas", 
+      "tag": "studyhubs", 
+      "link": "https://mega.nz/file/cEVXgDIT#H76lST6KpZljnP_YDbD8y8nZjjSevS7ZxPyR4zNZJlU", 
+      "image": "https://ik.imagekit.io/images213/ChatGPT%20Image%20Feb%2028,%202026,%2005_42_57%20AM.png", 
+      "desc": "studyhubs" },
   ]
 }
