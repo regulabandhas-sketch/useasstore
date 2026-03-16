@@ -1,14 +1,25 @@
 {
   "apps": [
     {
-      "name": "My App",
-      "image": "app.png",
-      "download": "download.html",
-      "qr": "qr.html"
+      "name": "Study Master",
+      "tag": "Education",
+      "link": "https://google.com",
+      "image": "https://cdn-icons-png.flaticon.com/512/3075/3075299.png",
+      "desc": "Your ultimate study companion."
     },
-    { "name": "useas", "tag": "restdhgj", 
-      "link": "https://mega.nz/file/cEVXgDIT#H76lST6KpZljnP_YDbD8y8nZjjSevS7ZxPyR4zNZJlU",
-      "image": "https://ik.imagekit.io/images213/ChatGPT%20Image%20Feb%2028,%202026,%2005_42_57%20AM.png?updatedAt=1773656602633", 
-      "desc": "erdthfg" },
+    {
+      "name": "Telegram",
+      "tag": "Communication",
+      "link": "https://telegram.org",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
+      "desc": "Fast and secure messaging."
+    },
+    {
+      "name": "Useas Games",
+      "tag": "Games",
+      "link": "https://example.com/useas.apk",
+      "image": "https://example.com/images/useas.png",
+      "desc": "An engaging gaming experience."
+    }
   ]
 }
